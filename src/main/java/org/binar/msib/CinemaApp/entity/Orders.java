@@ -28,9 +28,12 @@ public class Orders {
     private EntityUser entityUser;
 
     @Column
-    private Integer seat_id;
+    private Integer SeatNum;
+    private Integer studio_id;
+
     @ManyToOne
-    @JoinColumn(name = "seat_id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "SeatNum", nullable = false, insertable = false, updatable = false)
+    @JoinColumn (name = "studio_id", nullable = false, insertable = false, updatable = false)
     private Seat seat;
 
     @Column
