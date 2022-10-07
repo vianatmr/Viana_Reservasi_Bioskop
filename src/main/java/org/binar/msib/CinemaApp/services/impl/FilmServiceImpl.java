@@ -1,5 +1,7 @@
 package org.binar.msib.CinemaApp.services.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.binar.msib.CinemaApp.dto.FilmDTO;
 import org.binar.msib.CinemaApp.entity.Film;
 import org.binar.msib.CinemaApp.entity.Schedule;
 import org.binar.msib.CinemaApp.repository.FilmRepository;
@@ -8,15 +10,22 @@ import org.binar.msib.CinemaApp.services.FilmService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.lang.runtime.ObjectMethods;
 import java.util.List;
+import java.util.Optional;
+
 @Service
+@Transactional
 public class FilmServiceImpl implements FilmService {
+
     @Autowired
     FilmRepository filmRepository;
     ScheduleRepository scheduleRepository;
     @Override
-    public void insertFilm(Film film) {
-        filmRepository.save(film);
+    public Film insertFilm(Film film) {
+        Film result = filmRepository.save(film);
+        return result;
     }
 
     @Override
@@ -26,24 +35,52 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public Film updateFilm(Film film, Integer film_code) {
-        Film filmDB = filmRepository.findById(film.getFilm_code()).orElse(null);
-        filmDB.setFilm_name(film.getFilm_name());
-        filmDB.setFilm_status(film.getFilm_status());
-        filmDB.setPrice(film.getPrice());
-        return filmRepository.save(filmDB);
+        Film result = findById(film_code);
+        if (result != null) {
+            result.setFilm_name(film.getFilm_name());
+            result.setFilm_status(film.getFilm_status());
+            result.setPrice(film.getPrice());
+            filmRepository.save(film);
+        }
+        return null;
     }
 
     @Override
-    public Integer delete(Integer film_code) {
-        Film filmDB = filmRepository.findById(film_code).orElse(null);
-        filmRepository.delete(filmDB);
-        return film_code;
+    public Boolean delete(Integer film_code) {
+        Film result = findById(film_code);
+        if (result != null) {
+            filmRepository.deleteById(film_code);
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public Schedule getSchedule(int film_code) {
-        return scheduleRepository.findById(film_code).orElse(null);
+    public Schedule getSchedule(Integer film_code) {
+        Optional<Schedule> result = scheduleRepository.findById(film_code);
+        if (result.isPresent()) {
+            return result.get();
+        }
+        return null;
     }
 
+    @Override
+    public Film findById(Integer film_code) {
+        Optional<Film> result = filmRepository.findById(film_code);
+        if (result.isPresent()) {
+            return result.get();
+        }
+        return null;
+    }
 
+    ObjectMapper mapper = new ObjectMapper();
+    @Override
+    public FilmDTO mapToDto(Film film) {
+        return mapper.convertValue(film, FilmDTO.class);
+    }
+
+    @Override
+    public Film mapToEntity(FilmDTO filmDTO) {
+        return mapper.convertValue(filmDTO, Film.class);
+    }
 }

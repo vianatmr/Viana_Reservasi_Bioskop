@@ -15,7 +15,9 @@ public class Film {
 
     @Column
     private String film_name;
+    @Column
     private String film_status;
+    @Column
     private Integer price;
     
 }
