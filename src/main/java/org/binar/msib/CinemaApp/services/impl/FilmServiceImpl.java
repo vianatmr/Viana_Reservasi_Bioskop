@@ -34,13 +34,13 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public Film updateFilm(Film film, Integer film_code) {
+    public Film updateFilm(Integer film_code, Film film) {
         Film result = findById(film_code);
         if (result != null) {
             result.setFilm_name(film.getFilm_name());
-            result.setFilm_status(film.getFilm_status());
-            result.setPrice(film.getPrice());
-            filmRepository.save(film);
+//            result.setFilm_status(film.getFilm_status());
+//            result.setPrice(film.getPrice());
+            return filmRepository.save(result);
         }
         return null;
     }

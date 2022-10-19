@@ -24,7 +24,7 @@ public class FilmController {
    @PutMapping("/update/{film_code}")
     public FilmDTO updateFilm(@PathVariable Integer film_code, @RequestBody FilmDTO request){
        final Film film = filmService.mapToEntity(request);
-       Film result = filmService.updateFilm(film, film_code);
+       Film result = filmService.updateFilm(film_code,film);
        return filmService.mapToDto(result);
    }
    @GetMapping("/all")
